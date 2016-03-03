@@ -13,4 +13,14 @@
     <string name="name">Name</string>
     <string name="insurance_name">Insurance Name</string>
     <string name="member_id">Member ID</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="your_profile_data_has_been_updated">Your profile data has been updated</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="your_profile_will_be_visible_in_all_your_logs">Your profile will be visible in all your logs</string>
+    <string name="okay">Okay</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_changes_will_be_discarded">Your changes will be discarded</string>
+    <string name="leave">Leave</string>
+    <string name="stay">Stay</string>
 </resources>
