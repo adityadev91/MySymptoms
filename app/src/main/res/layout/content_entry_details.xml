@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.adityadevg.mysymptoms.ProfileActivity"
-    tools:showIn="@layout/activity_profile">
+    tools:context="com.adityadevg.mysymptoms.EntryDetailsActivity"
+    tools:showIn="@layout/activity_entry_details">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="start"
+        android:layout_height="match_parent"
+        android:gravity="left"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -19,22 +19,10 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <TextView
-            android:id="@+id/textView_patientName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/full_name" />
-
-        <EditText
-            android:id="@+id/editText_patientName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-
-        <TextView
             android:id="@+id/textView_patientEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/email" />
+            android:text="@string/time_of_occurrence" />
 
         <EditText
             android:id="@+id/editText_patientEmail"
@@ -43,71 +31,64 @@
             android:inputType="textEmailAddress" />
 
         <TextView
-            android:id="@+id/textView_patientPhone"
+            android:id="@+id/textView_bodyPart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/phone" />
+            android:text="@string/body_part" />
 
-        <EditText
-            android:id="@+id/editText_patientPhone"
+        <Spinner
+            android:id="@+id/spinner_bodyPart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone" />
+            android:entries="@array/array_body_parts"
+            android:prompt="@string/choose_a_body_part"
+            android:spinnerMode="dialog" />
 
         <TextView
-            android:id="@+id/textView_insuranceName"
+            android:id="@+id/textView_symptomDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/insurance_name" />
+            android:text="@string/symptom_description" />
 
         <EditText
-            android:id="@+id/editText_insuranceName"
+            android:id="@+id/editText_symptomDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textMultiLine"
+            android:minLines="5" />
 
         <TextView
-            android:id="@+id/textView_memberID"
+            android:id="@+id/textView_severityLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/member_id" />
+            android:text="@string/level_of_severity" />
 
-        <EditText
-            android:id="@+id/editText_memberID"
+        <Spinner
+            android:id="@+id/spinner_severityLevel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:entries="@array/array_levels_of_severity"
+            android:prompt="@string/choose_a_level_of_severity"
+            android:spinnerMode="dialog" />
 
-        <TextView
-            android:id="@+id/textView_emergencyContact"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:text="@string/emergency_contact" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView_emergencyName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/name" />
+            <TextView
+                android:id="@+id/textView_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attach_a_picture" />
 
-        <EditText
-            android:id="@+id/editText_emergencyName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/textView_emergencyPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/phone" />
-
-        <EditText
-            android:id="@+id/editText_emergencyPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/ic_menu_camera"
+                android:onClick="capturePicture"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -119,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="dontSaveProfile"
+                android:onClick="dontSaveEntry"
                 android:text="@string/back" />
 
             <Button
@@ -127,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="saveProfile"
+                android:onClick="saveEntry"
                 android:text="@string/save" />
 
         </LinearLayout>

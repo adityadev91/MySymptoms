@@ -23,4 +23,51 @@
     <string name="your_changes_will_be_discarded">Your changes will be discarded</string>
     <string name="leave">Leave</string>
     <string name="stay">Stay</string>
+    <string name="add_new_entry">Add New Entry</string>
+    <string name="entry_details">Entry Details</string>
+    <string name="your_symptom_has_been_logged">Your symptom has been logged</string>
+    <string name="body_part">Body Part</string>
+    <string name="time_of_occurrence">Time of Occurrence</string>
+    <string name="choose_a_body_part">Choose a body part</string>
+    <string name="select_other_if_none_of_them_seem_valid">Select other if none of them seem valid</string>
+    <string name="please_select_a_body_part_from_given_options">Please select a body part from given options</string>
+    <string name="symptom_description">Symptom Description</string>
+    <string name="level_of_severity">Level of Severity</string>
+    <string name="choose_a_level_of_severity">Choose a level of Severity</string>
+    <string name="attach_a_picture">Attach a picture</string>
+    <string name="select_from_existing_images">Select from existing images</string>
+    <string name="click_a_new_picture">Click a new picture</string>
+    <string-array name="array_body_parts">
+        <item>Left Eye</item>
+        <item>Right Eye</item>
+        <item>Nose</item>
+        <item>Left Ear</item>
+        <item>Right Ear</item>
+        <item>Mouth</item>
+        <item>Head</item>
+        <item>Neck</item>
+        <item>Left Shoulder</item>
+        <item>Right Shoulder</item>
+        <item>Left Arm</item>
+        <item>Right Arm</item>
+        <item>Fingers</item>
+        <item>Torso</item>
+        <item>Lower back</item>
+        <item>Genitals</item>
+        <item>Left Thigh</item>
+        <item>Right Thigh</item>
+        <item>Left Knee</item>
+        <item>Right Knee</item>
+        <item>Left Leg</item>
+        <item>Right Leg</item>
+        <item>Left Foot</item>
+        <item>Right Foot</item>
+        <item>Toes</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="array_levels_of_severity">
+        <item>Mild</item>
+        <item>Moderate</item>
+        <item>Severe</item>
+    </string-array>
 </resources>
