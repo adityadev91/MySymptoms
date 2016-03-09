@@ -2,6 +2,7 @@ package com.adityadevg.mysymptoms;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -99,15 +100,22 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void setTimeOfOccurrence(View timeView){
+        DialogFragment setDateTimeFragment = new DatePickerFragment();
+        setDateTimeFragment.show(getFragmentManager(),getString(R.string.date_picker));
+    }
+
     public void saveEntry(View entryView) {
         final AlertDialog.Builder saveEntryDialog = new AlertDialog.Builder(this);
-        saveEntryDialog.setMessage(R.string.your_symptom_has_been_logged)
+        saveEntryDialog.setMessage(R.string.your_changes_can_be_modified_or_deleted_later)
                 .setTitle(R.string.are_you_sure)
                 .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class)
+
+
+                        startActivity(new Intent(getApplicationContext(),SymptomsActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })

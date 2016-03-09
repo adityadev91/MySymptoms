@@ -19,12 +19,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_new_entry"
-        android:id="@+id/newEntryBtn"
-        android:layout_gravity="center_horizontal"
-        android:onClick="openEntryDetails"/>
 
 </LinearLayout>

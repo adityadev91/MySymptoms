@@ -37,6 +37,9 @@
     <string name="attach_a_picture">Attach a picture</string>
     <string name="select_from_existing_images">Select from existing images</string>
     <string name="click_a_new_picture">Click a new picture</string>
+    <string name="your_changes_can_be_modified_or_deleted_later">Your changes can be modified or deleted later</string>
+    <string name="date_picker">Date Picker</string>
+    <string name="time_picker">Time Picker</string>
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>

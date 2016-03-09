@@ -18,17 +18,34 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView_patientEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_of_occurrence" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/ic_menu_my_calendar"
+                android:onClick="setTimeOfOccurrence"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/textView_patientEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time_of_occurrence" />
+            android:id="@+id/tv_dateOfOccurrence" />
 
-        <EditText
-            android:id="@+id/editText_patientEmail"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:id="@+id/tv_timeOfOccurrence" />
 
         <TextView
             android:id="@+id/textView_bodyPart"
@@ -38,7 +55,7 @@
 
         <Spinner
             android:id="@+id/spinner_bodyPart"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/array_body_parts"
             android:prompt="@string/choose_a_body_part"
@@ -65,7 +82,7 @@
 
         <Spinner
             android:id="@+id/spinner_severityLevel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/array_levels_of_severity"
             android:prompt="@string/choose_a_level_of_severity"
@@ -89,6 +106,11 @@
                 android:onClick="capturePicture"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_imageName" />
 
         <LinearLayout
             android:layout_width="match_parent"
