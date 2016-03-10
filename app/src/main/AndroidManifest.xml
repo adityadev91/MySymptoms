@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.adityadevg.mysymptoms">
+    package="com.adityadevg.mysymptoms"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="23" />
+
+
+    <!-- Note that all required permissions are declared here in the Android manifest.
+    On Android M and above, use of these permissions is only requested at run time. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- The following permissions are only requested if the device is on M or above.
+     On older platforms these permissions are not requested and will not be available. -->
+    <uses-permission-sdk-m android:name="android.permission.CAMERA" />-->
+    <uses-permission-sdk-m android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <uses-permission-sdk-m android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+
 
     <application
         android:allowBackup="true"
@@ -44,10 +64,5 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
     </application>
 </manifest>

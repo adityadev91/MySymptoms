@@ -40,6 +40,7 @@
     <string name="your_changes_can_be_modified_or_deleted_later">Your changes can be modified or deleted later</string>
     <string name="date_picker">Date Picker</string>
     <string name="time_picker">Time Picker</string>
+    <string name="allow_permissions_for_smooth_functioning">Allow permissions for smooth functioning</string>
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>
