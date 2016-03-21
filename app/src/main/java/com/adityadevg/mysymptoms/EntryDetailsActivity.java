@@ -15,28 +15,30 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.adityadevg.mysymptoms.PickerFragments.DatePickerFragment;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by adityadev on 3/4/2016.
  * Activity displays a form to edit existing entry or create a new entry
  */
-public class EntryDetailsActivity extends AppCompatActivity implements OnItemSelectedListener {
-    Toolbar toolbar;
-    Spinner sp_selectBodyPart;
-    String bodyPart;
+public class EntryDetailsActivity extends AppCompatActivity
+        implements OnItemSelectedListener {
+    private Toolbar toolbar;
+    private DBHelper dbHelper;
 
     /**
      * Random, unique value for receive image from intent
@@ -54,37 +56,100 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
     private View linearLayoutView;
 
     private Bitmap bitmap;
-    private ImageView symptomImg;
-    List<String> listOfPermissions = new ArrayList<String>();
+
+    private TextView tv_dateStamp;
+    private TextView tv_timeStamp;
+
+    private Spinner sp_bodyPart;
+    private String bodyPart;
+
+    private EditText et_sympDesc;
+
+    private Spinner sp_levelOfSeverity;
+    private String levelOfSeverity;
+
+    private ImageView iv_symptomImg;
+    private String str_imgID;
+
+    private Button btn_save;
+    private Button btn_back;
+
+    Bundle bundle;
+    boolean isUpdate = false;
+
+    String str_date = "", str_time = "";
+    private int symptomID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_details);
+        bundle = getIntent().getExtras();
+
+        dbHelper = new DBHelper(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         linearLayoutView = findViewById(R.id.linearLayoutView);
-        symptomImg = (ImageView) findViewById(R.id.img_symptom);
+        iv_symptomImg = (ImageView) findViewById(R.id.img_symptom);
 
-        sp_selectBodyPart = (Spinner) findViewById(R.id.spinner_bodyPart);
-        sp_selectBodyPart.setOnItemSelectedListener(this);
-        sp_selectBodyPart.setPrompt(getString(R.string.choose_a_level_of_severity));
+        tv_dateStamp = (TextView) findViewById(R.id.tv_dateOfOccurrence);
+        tv_timeStamp = (TextView) findViewById(R.id.tv_timeOfOccurrence);
 
+        sp_bodyPart = (Spinner) findViewById(R.id.spinner_bodyPart);
+        sp_bodyPart.setOnItemSelectedListener(this);
+        sp_bodyPart.setPrompt(getString(R.string.choose_a_body_part));
+
+        et_sympDesc = (EditText) findViewById(R.id.editText_symptomDesc);
+
+        sp_levelOfSeverity = (Spinner) findViewById(R.id.spinner_severityLevel);
+        sp_levelOfSeverity.setOnItemSelectedListener(this);
+        sp_levelOfSeverity.setPrompt(getString(R.string.choose_a_level_of_severity));
+
+        btn_save = (Button) findViewById(R.id.saveBtn);
+        btn_back = (Button) findViewById(R.id.backBtn);
+
+        if (null != bundle && bundle.containsKey(DBHelper.FORMAT_SYMPTOMS_DATE)) {
+            str_date = bundle.getString(dbHelper.FORMAT_SYMPTOMS_DATE);
+            str_time = bundle.getString(dbHelper.FORMAT_SYMPTOMS_TIME);
+
+            tv_dateStamp.setText(str_date);
+            tv_timeStamp.setText(str_time);
+            sp_bodyPart.setSelection(getIndex(sp_bodyPart, bundle.getString(dbHelper.SYMPTOMS_COLUMN_BODY_PART).toString()));
+            et_sympDesc.setText(bundle.getString(dbHelper.SYMPTOMS_COLUMN_SYMPTOM_DESC));
+            sp_levelOfSeverity.setSelection(getIndex(sp_levelOfSeverity, bundle.getString(dbHelper.SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY).toString()));
+            symptomID = dbHelper.getIdFromDateTime(str_date + " " + str_time);
+
+            isUpdate = true;
+        } else {
+            isUpdate = false;
+        }
+    }
+
+    /*
+    * Returns index of selected spinner option
+    * */
+    private int getIndex(Spinner spinner, String selectedVal) {
+        int index = 0;
+
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(selectedVal)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     /**
-     * Called when the 'show camera' button is clicked.
-     * Callback is defined in resource layout definition.
+     * Called when the Camera button is clicked
      */
     public void capturePicture(View view) {
-        Log.i(getLocalClassName(), "Show camera button pressed. Checking permission.");
         // Check if the Camera permission is already available.
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
             // Camera and external storage R/W permission has not been granted.
@@ -96,14 +161,13 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
     }
 
     /**
-     * Requests the Camera permission
+     * Requests the Camera and External Storage R/W permission
      * If permission was denied previously, a SnackBar will prompt user to grant
      * permission, else permission is requested directly
      */
     private void requestCameraAndExtStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             // Display additional message to the user, if permission was not granted
             // User would benefit they have previously denied permission
@@ -115,9 +179,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
                                     new String[]{Manifest.permission.CAMERA},
                                     REQUEST_IMAGE_CAPTURE);
                             ActivityCompat.requestPermissions(EntryDetailsActivity.this,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    REQUEST_IMAGE_CAPTURE);
-                            ActivityCompat.requestPermissions(EntryDetailsActivity.this,
                                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                     REQUEST_IMAGE_CAPTURE);
                         }
@@ -126,13 +187,12 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
         } else {
             // Camera permission has not been granted yet. Request it directly
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_IMAGE_CAPTURE);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_CAPTURE);
         }
     }
 
     /*
-     * Called by Camera button
+     * Called by Camera button after required permissions are granted
      */
     public void showCamOptions() {
         // Set dialog options to display when user clicks Camera button
@@ -157,12 +217,6 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
                         startActivityForResult(
                                 Intent.createChooser(captureImageIntent, getString(R.string.select_from_existing_images)),
                                 REQUEST_IMAGE_SELECT);
-
-/*
-                        captureImageIntent.setAction(Intent.ACTION_GET_CONTENT);
-                        captureImageIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                        startActivityForResult(captureImageIntent, REQUEST_IMAGE_CAPTURE);
-*/
                         break;
                     default:
                         break;
@@ -174,21 +228,17 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
     }
 
     @Override
-    /** To receive image from intent */
+    /** To receive image from camera intent */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && ((requestCode == REQUEST_IMAGE_CAPTURE) || (requestCode == REQUEST_IMAGE_SELECT))) {
             try {
-                // We need to recyle unused bitmaps
-                /*if (null != bitmap) {
-                    bitmap.recycle();
-                }
-                */
                 InputStream stream = getContentResolver().openInputStream(
                         data.getData());
                 bitmap = BitmapFactory.decodeStream(stream);
+                //bitmap.compress(Bitmap.CompressFormat.JPEG, );
                 stream.close();
-                symptomImg.setImageBitmap(bitmap);
+                iv_symptomImg.setImageBitmap(bitmap);
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -209,18 +259,19 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
     /**
      * Called by Save button
      */
-    public void saveEntry(View entryView) {
+    public void modifyEntry(View entryView) {
         final AlertDialog.Builder saveEntryDialog = new AlertDialog.Builder(this);
         saveEntryDialog.setMessage(R.string.your_changes_can_be_modified_or_deleted_later)
                 .setTitle(R.string.are_you_sure)
                 .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
-
-
-                        startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        String date_time = tv_dateStamp.getText().toString() + " " + tv_timeStamp.getText().toString();
+                        if (isUpdate) {
+                            updateEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
+                        } else {
+                            saveEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -231,6 +282,26 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
                 });
         saveEntryDialog.create();
         saveEntryDialog.show();
+    }
+
+    private void saveEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
+        if (dbHelper.insertSymptom(date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)) {
+            Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.your_symptom_cannot_be_logged_due_to_an_internal_database_error), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
+        if(dbHelper.updateSymptom(symptomID, date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)){
+            Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.your_symptom_cannot_be_logged_due_to_an_internal_database_error), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -258,20 +329,25 @@ public class EntryDetailsActivity extends AppCompatActivity implements OnItemSel
                 });
         dontSaveEntryDialog.create();
         dontSaveEntryDialog.show();
-
     }
 
     @Override
-    /** Stores selected value from Body Part Spinner in a string */
+    /** Stores selected value from Body Part and Level of Severity Spinners in a string */
     public void onItemSelected(AdapterView<?> parent, View view, int position,
                                long id) {
-        bodyPart = parent.getItemAtPosition(position).toString();
+        switch (parent.getId()) {
+            case R.id.spinner_bodyPart:
+                bodyPart = parent.getItemAtPosition(position).toString();
+                break;
+            case R.id.spinner_severityLevel:
+                levelOfSeverity = parent.getItemAtPosition(position).toString();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
-    /** If no body part is selected, display toast message */
     public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(parent.getContext(), getString(R.string.please_select_a_body_part_from_given_options), Toast.LENGTH_SHORT).show();
-        Toast.makeText(parent.getContext(), getString(R.string.select_other_if_none_of_them_seem_valid), Toast.LENGTH_SHORT).show();
     }
 }

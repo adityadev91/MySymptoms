@@ -41,6 +41,13 @@
     <string name="date_picker">Date Picker</string>
     <string name="time_picker">Time Picker</string>
     <string name="allow_permissions_for_smooth_functioning">Allow permissions for smooth functioning</string>
+    <string name="please_select_a_level_of_severity_from_given_options">Please select a level of severity from given options</string>
+    <string name="your_symptom_cannot_be_logged_due_to_an_internal_database_error">Your symptom cannot be logged due to an internal database error</string>
+    <string name="modify_entry">Modify Entry</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="your_symptom_has_been_deleted">Your symptom has been deleted</string>
+    <string name="your_symptom_could_not_be_deleted">Your symptom could not be deleted</string>
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>
