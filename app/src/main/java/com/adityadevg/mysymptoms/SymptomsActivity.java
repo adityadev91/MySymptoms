@@ -14,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.adityadevg.mysymptoms.DatabaseModule.DBHelper;
+import com.adityadevg.mysymptoms.DatabaseModule.EntryDetailsActivity;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

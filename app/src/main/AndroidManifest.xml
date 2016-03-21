@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EntryDetailsActivity"
+            android:name=".DatabaseModule.EntryDetailsActivity"
             android:label="@string/entry_details"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

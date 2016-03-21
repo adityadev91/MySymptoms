@@ -1,4 +1,4 @@
-package com.adityadevg.mysymptoms;
+package com.adityadevg.mysymptoms.DatabaseModule;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -115,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         entryDetailsBundle.putString(FORMAT_SYMPTOMS_TIME, timeValue);
         entryDetailsBundle.putString(SYMPTOMS_COLUMN_BODY_PART, res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_BODY_PART)));
         entryDetailsBundle.putString(SYMPTOMS_COLUMN_SYMPTOM_DESC, res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_SYMPTOM_DESC)));
-        entryDetailsBundle.putString(SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY, res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_SYMPTOM_DESC)));
+        entryDetailsBundle.putString(SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY, res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY)));
         entryDetailsBundle.putString(SYMPTOMS_COLUMN_IMAGE_ID, res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_IMAGE_ID)));
 
         return entryDetailsBundle;

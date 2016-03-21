@@ -1,4 +1,4 @@
-package com.adityadevg.mysymptoms;
+package com.adityadevg.mysymptoms.DatabaseModule;
 
 import android.Manifest;
 import android.app.Activity;
@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adityadevg.mysymptoms.PickerFragments.DatePickerFragment;
+import com.adityadevg.mysymptoms.R;
+import com.adityadevg.mysymptoms.SymptomsActivity;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
