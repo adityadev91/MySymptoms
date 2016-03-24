@@ -73,6 +73,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences|textMultiLine"
+            android:gravity="top"
+            android:hint="@string/provide_a_concise_description_of_your_ailment"
             android:minLines="5" />
 
         <TextView

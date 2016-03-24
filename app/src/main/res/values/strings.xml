@@ -50,6 +50,7 @@
     <string name="your_symptom_could_not_be_deleted">Your symptom could not be deleted</string>
     <string name="choose_an_email_client">Choose an email client</string>
     <string name="no_email_client_installed">No email client installed</string>
+    <string name="provide_a_concise_description_of_your_ailment">Provide a concise description of your ailment</string>
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>
