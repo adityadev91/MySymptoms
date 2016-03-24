@@ -28,7 +28,7 @@
             android:id="@+id/editText_patientName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textCapWords" />
 
         <TextView
             android:id="@+id/textView_patientEmail"
@@ -64,7 +64,7 @@
             android:id="@+id/editText_insuranceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textCapWords" />
 
         <TextView
             android:id="@+id/textView_memberID"
@@ -76,7 +76,7 @@
             android:id="@+id/editText_memberID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:inputType="textCapCharacters" />
 
         <TextView
             android:id="@+id/textView_emergencyContact"
@@ -95,7 +95,8 @@
         <EditText
             android:id="@+id/editText_emergencyName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"/>
 
         <TextView
             android:id="@+id/textView_emergencyPhone"

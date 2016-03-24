@@ -48,6 +48,8 @@
     <string name="delete">Delete</string>
     <string name="your_symptom_has_been_deleted">Your symptom has been deleted</string>
     <string name="your_symptom_could_not_be_deleted">Your symptom could not be deleted</string>
+    <string name="choose_an_email_client">Choose an email client</string>
+    <string name="no_email_client_installed">No email client installed</string>
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>

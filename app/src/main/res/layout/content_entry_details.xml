@@ -72,7 +72,7 @@
             android:id="@+id/editText_symptomDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:inputType="textCapSentences|textMultiLine"
             android:minLines="5" />
 
         <TextView
