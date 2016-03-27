@@ -109,6 +109,11 @@ public class ProfileActivity extends AppCompatActivity {
         profileDataEditor.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        dontSaveProfile(new View(this));
+    }
+
     public void dontSaveProfile(View dontSaveView) {
         final AlertDialog.Builder dontSaveDataDialog = new AlertDialog.Builder(this);
         dontSaveDataDialog.setMessage(R.string.your_changes_will_be_discarded)

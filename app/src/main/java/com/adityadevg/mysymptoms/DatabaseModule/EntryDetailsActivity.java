@@ -306,6 +306,11 @@ public class EntryDetailsActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        dontSaveEntry(new View(this));
+    }
+
     /**
      * Called by Back button
      */
