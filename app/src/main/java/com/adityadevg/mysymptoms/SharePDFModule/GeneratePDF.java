@@ -1,7 +1,6 @@
 package com.adityadevg.mysymptoms.SharePDFModule;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -17,6 +16,8 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
@@ -27,11 +28,21 @@ import java.util.List;
 
 public class GeneratePDF {
 
+    private static final String DATE = "Date";
+    private static final String TIME = "Time";
+    private static final String BODY_PART = "Body Part";
+    private static final String SYMPTOM_DESCRIPTION = "Symptom Description";
+    private static final String LEVEL_OF_SEVERITY = "Level of Severity";
+
     public static Uri createPDF(DBHelper dbHelper, SharedPreferences sharedPreferences) {
         Document doc = new Document(PageSize.A4);
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MySymptoms";
         File directoryPath = new File(path);
-        File file = new File(directoryPath, "sample.pdf");
+        String pdfFileName = sharedPreferences.getString(ProfileActivity.keyPatientName, "").split(" ")[0]
+                + "_"
+                + System.currentTimeMillis()
+                + ".pdf";
+        File file = new File(directoryPath, pdfFileName);
 
         List<SymptomDetailsDTO> listOfSymptomDetails = dbHelper.getListOfAllSymptomDetails();
 
@@ -45,7 +56,10 @@ public class GeneratePDF {
             writer.setPageEvent(new MyFooter(sharedPreferences));
 
             doc.open();
+            doc.add(new Paragraph(" "));
+            doc.add(getSymptomDetailsTable(listOfSymptomDetails));
 
+/*
             Paragraph p1 = new Paragraph("Hi! I am generating my first PDF");
             Font paraFont = new Font(Font.FontFamily.COURIER);
             p1.setAlignment(Paragraph.ALIGN_CENTER);
@@ -60,6 +74,7 @@ public class GeneratePDF {
             p2.setFont(paraFont2);
 
             doc.add(p2);
+*/
 
 /*
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -84,6 +99,31 @@ public class GeneratePDF {
         return Uri.fromFile(file);
     }
 
+    private static PdfPTable getSymptomDetailsTable(List<SymptomDetailsDTO> listOfSymptomDetails) {
+        PdfPTable pdfTable = new PdfPTable(5);
+        Font colHeadFont = new Font(Font.FontFamily.UNDEFINED, Font.DEFAULTSIZE, Font.BOLD);
+
+        pdfTable.addCell(new PdfPCell(new Phrase(DATE, colHeadFont)));
+        pdfTable.addCell(new PdfPCell(new Phrase(TIME, colHeadFont)));
+        pdfTable.addCell(new PdfPCell(new Phrase(BODY_PART, colHeadFont)));
+        pdfTable.addCell(new PdfPCell(new Phrase(SYMPTOM_DESCRIPTION, colHeadFont)));
+        pdfTable.addCell(new PdfPCell(new Phrase(LEVEL_OF_SEVERITY, colHeadFont)));
+
+        for (SymptomDetailsDTO symptomDetailsObj : listOfSymptomDetails) {
+            // Display date value from datetimestamp string
+            pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[0]);
+
+            // Display time value from datetimestamp string
+            // And eliminate seconds value from time stamp
+            pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[1].substring(0, symptomDetailsObj.getdateTimeStamp().split(" ")[1].length() - 3));
+
+            pdfTable.addCell(symptomDetailsObj.getBodyPart());
+            pdfTable.addCell(symptomDetailsObj.getSymptomDesc());
+            pdfTable.addCell(symptomDetailsObj.getLevelOfSecurity());
+        }
+        return pdfTable;
+    }
+
 
     static class MyFooter extends PdfPageEventHelper {
         Font headerFont = new Font(Font.FontFamily.UNDEFINED, Font.DEFAULTSIZE, Font.BOLD);
@@ -97,7 +137,10 @@ public class GeneratePDF {
         String str_memberID;
         String str_emergencyName;
         String str_emergencyPhone;
-
+        private static final String phoneTAG = "Phone: ";
+        private static final String emergencyContactTAG = "Emergency Contact: ";
+        private static final String insuranceCompanyTAG = "Insurance Company: ";
+        private static final String memberIdTAG = "Member ID: ";
 
         public MyFooter(SharedPreferences profileData) {
             this.profileData = profileData;
@@ -114,15 +157,15 @@ public class GeneratePDF {
             str_emergencyName = profileData.getString(ProfileActivity.keyEmergencyName, "");
             str_emergencyPhone = profileData.getString(ProfileActivity.keyEmergencyPhone, "");
 
-            Phrase headerPatientName = new Phrase(str_patientName, headerFont);
+            Phrase headerPatientName = new Phrase(str_patientName.toUpperCase(), headerFont);
             Phrase headerPatientEmail = new Phrase(str_patientEmail, headerFont);
-            Phrase headerPatientPhone = new Phrase(str_patientPhone, headerFont);
+            Phrase headerPatientPhone = new Phrase(phoneTAG + str_patientPhone, headerFont);
 
-            Phrase headerEmergencyName = new Phrase(str_emergencyName, footerFont);
-            Phrase headerEmergencyPhone = new Phrase(str_emergencyPhone, footerFont);
+            Phrase headerEmergencyName = new Phrase(emergencyContactTAG+ str_emergencyName, footerFont);
+            Phrase headerEmergencyPhone = new Phrase(phoneTAG+ str_emergencyPhone, footerFont);
 
-            Phrase footerInsuranceName = new Phrase(str_insuranceName, footerFont);
-            Phrase footerMemberID = new Phrase(str_memberID, footerFont);
+            Phrase footerInsuranceName = new Phrase(insuranceCompanyTAG + str_insuranceName, footerFont);
+            Phrase footerMemberID = new Phrase(memberIdTAG + str_memberID, footerFont);
 
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
                     headerPatientName,
