@@ -1,5 +1,7 @@
 <resources>
+
     <string name="app_name">My Symptoms</string>
+
     <string name="action_settings">Settings</string>
     <string name="profile">Profile</string>
     <string name="shareSymptoms">Share Symptoms</string>
@@ -15,7 +17,6 @@
     <string name="member_id">Member ID</string>
     <string name="save">Save</string>
     <string name="back">Back</string>
-    <string name="your_profile_data_has_been_updated">Your profile data has been updated</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="your_profile_will_be_visible_in_all_your_logs">Your profile will be visible in all your logs</string>
     <string name="okay">Okay</string>
@@ -25,7 +26,6 @@
     <string name="stay">Stay</string>
     <string name="add_new_entry">Add New Entry</string>
     <string name="entry_details">Entry Details</string>
-    <string name="your_symptom_has_been_logged">Your symptom has been logged</string>
     <string name="body_part">Body Part</string>
     <string name="time_of_occurrence">Time of Occurrence</string>
     <string name="choose_a_body_part">Choose a body part</string>
@@ -42,15 +42,23 @@
     <string name="time_picker">Time Picker</string>
     <string name="allow_permissions_for_smooth_functioning">Allow permissions for smooth functioning</string>
     <string name="please_select_a_level_of_severity_from_given_options">Please select a level of severity from given options</string>
-    <string name="your_symptom_cannot_be_logged_due_to_an_internal_database_error">Your symptom cannot be logged due to an internal database error</string>
     <string name="modify_entry">Modify Entry</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="choose_an_email_client">Choose an email client</string>
+    <string name="provide_a_concise_description_of_your_ailment">Provide a concise description of your ailment</string>
+
+    <!--Toast Messages-->
+    <string name="your_profile_data_has_been_updated">Your profile data has been updated</string>
+    <string name="your_symptom_has_been_logged">Your symptom has been logged</string>
+    <string name="your_symptom_cannot_be_logged_due_to_an_internal_database_error">Your symptom cannot be logged due to an internal database error</string>
     <string name="your_symptom_has_been_deleted">Your symptom has been deleted</string>
     <string name="your_symptom_could_not_be_deleted">Your symptom could not be deleted</string>
-    <string name="choose_an_email_client">Choose an email client</string>
     <string name="no_email_client_installed">No email client installed</string>
-    <string name="provide_a_concise_description_of_your_ailment">Provide a concise description of your ailment</string>
+
+
+
+
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>

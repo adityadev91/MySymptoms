@@ -47,7 +47,7 @@ public class SymptomsActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         fab_newEntry = (FloatingActionButton) findViewById(R.id.newEntryBtn);
 
-        listOfSymptoms = dbHelper.getAllSymptoms();
+        listOfSymptoms = dbHelper.getListOfAllDateTimes();
         listView_symptomsList = (ListView) findViewById(R.id.lv_symptomsList);
         populateSymptoms();
 
@@ -99,7 +99,7 @@ public class SymptomsActivity extends AppCompatActivity {
     private void updateEntry(final AdapterView<?> parent, final int position) {
         final String date_time = (String) parent.getItemAtPosition(position);
         startActivity((new Intent(getApplicationContext(), EntryDetailsActivity.class))
-                .putExtras(dbHelper.getSymptomEntry(date_time)));
+                .putExtras(dbHelper.getSymptomFromDateTime(date_time)));
     }
 
     /*

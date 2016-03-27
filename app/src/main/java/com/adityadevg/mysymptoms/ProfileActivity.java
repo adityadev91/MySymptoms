@@ -17,14 +17,16 @@ import android.widget.Toast;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    final static String keyPreferenceName = "MySymptomsProfile";
-    final static String keyPatientName = "PatientName";
-    final static String keyPatientEmail = "PatientEmail";
-    final static String keyPatientPhone = "PatientPhone";
-    final static String keyInsuranceName = "InsuranceName";
-    final static String keyMemberID = "MemberID";
-    final static String keyEmergencyName = "EmergencyName";
-    final static String keyEmergencyPhone = "EmergencyPhone";
+
+    public final static String keyPreferenceName = "MySymptomsProfile";
+    public final static String keyPatientName = "PatientName";
+    public final static String keyPatientEmail = "PatientEmail";
+    public final static String keyPatientPhone = "PatientPhone";
+    public final static String keyInsuranceName = "InsuranceName";
+    public final static String keyMemberID = "MemberID";
+    public final static String keyEmergencyName = "EmergencyName";
+    public final static String keyEmergencyPhone = "EmergencyPhone";
+
 
     SharedPreferences profileData;
     SharedPreferences.Editor profileDataEditor;
@@ -80,14 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        profileDataEditor.putString(keyPatientName, et_patientName.getText().toString());
-                        profileDataEditor.putString(keyPatientEmail, et_patientEmail.getText().toString());
-                        profileDataEditor.putString(keyPatientPhone, et_patientPhone.getText().toString());
-                        profileDataEditor.putString(keyInsuranceName, et_insuranceName.getText().toString());
-                        profileDataEditor.putString(keyMemberID, et_memberID.getText().toString());
-                        profileDataEditor.putString(keyEmergencyName, et_emergencyName.getText().toString());
-                        profileDataEditor.putString(keyEmergencyPhone, et_emergencyPhone.getText().toString());
-                        profileDataEditor.commit();
+                        setProfileData();
                         Toast.makeText(getBaseContext(), getString(R.string.your_profile_data_has_been_updated), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -103,6 +98,17 @@ public class ProfileActivity extends AppCompatActivity {
         saveDataDialog.show();
     }
 
+    private void setProfileData() {
+        profileDataEditor.putString(keyPatientName, et_patientName.getText().toString());
+        profileDataEditor.putString(keyPatientEmail, et_patientEmail.getText().toString());
+        profileDataEditor.putString(keyPatientPhone, et_patientPhone.getText().toString());
+        profileDataEditor.putString(keyInsuranceName, et_insuranceName.getText().toString());
+        profileDataEditor.putString(keyMemberID, et_memberID.getText().toString());
+        profileDataEditor.putString(keyEmergencyName, et_emergencyName.getText().toString());
+        profileDataEditor.putString(keyEmergencyPhone, et_emergencyPhone.getText().toString());
+        profileDataEditor.commit();
+    }
+
     public void dontSaveProfile(View dontSaveView) {
         final AlertDialog.Builder dontSaveDataDialog = new AlertDialog.Builder(this);
         dontSaveDataDialog.setMessage(R.string.your_changes_will_be_discarded)
@@ -116,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })
-                .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener(){
+                .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

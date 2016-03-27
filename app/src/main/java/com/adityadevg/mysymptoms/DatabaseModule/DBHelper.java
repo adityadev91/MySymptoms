@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public Bundle getSymptomEntry(String date_time) {
+    public Bundle getSymptomFromDateTime(String date_time) {
         Bundle entryDetailsBundle = new Bundle();
         db = this.getReadableDatabase();
         String dateValue = "";
@@ -121,7 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return entryDetailsBundle;
     }
 
-    public int numberOfSymptoms() {
+    public int getNumberOfSymptoms() {
         db = this.getReadableDatabase();
         int numRows = (int) DatabaseUtils.queryNumEntries(db, SYMPTOMS_TABLE_NAME);
         return numRows;
@@ -165,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{date_time});
     }
 
-    public List<String> getAllSymptoms() {
+    public List<String> getListOfAllDateTimes() {
         db = this.getWritableDatabase();
         List<String> array_list = new ArrayList<>();
 
@@ -174,6 +174,37 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             array_list.add(res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_DATE_TIME)));
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public List<SymptomDetailsDTO> getListOfAllSymptomDetails() {
+        db = this.getWritableDatabase();
+        List<SymptomDetailsDTO> array_list = new ArrayList<>();
+
+        Cursor res = db.rawQuery("SELECT * FROM " + SYMPTOMS_TABLE_NAME, null);
+        res.moveToFirst();
+
+        SymptomDetailsDTO symptomDetailsObj;
+
+        String str_dateTimeStamp;
+        String str_bodyPart;
+        String str_symptomDesc;
+        String str_levelOfSecurity;
+        String str_pictureID;
+
+        while (!res.isAfterLast()) {
+
+            str_dateTimeStamp = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_DATE_TIME));
+            str_bodyPart = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_BODY_PART));
+            str_symptomDesc = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_SYMPTOM_DESC));
+            str_levelOfSecurity = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY));
+            str_pictureID = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_IMAGE_ID));
+
+            symptomDetailsObj = SymptomDetailsDTO.getInstanceOfSymptomDetailsDTO(str_dateTimeStamp,str_bodyPart,str_symptomDesc,str_levelOfSecurity,str_pictureID);
+            array_list.add(symptomDetailsObj);
+
             res.moveToNext();
         }
         return array_list;

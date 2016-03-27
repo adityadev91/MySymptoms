@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.adityadevg.mysymptoms.DatabaseModule.DBHelper;
 import com.adityadevg.mysymptoms.SharePDFModule.GeneratePDF;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mailPDFIntent.setType("message/rfc822");
         mailPDFIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
         mailPDFIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-        mailPDFIntent.putExtra(Intent.EXTRA_STREAM, GeneratePDF.createPDF());
+        mailPDFIntent.putExtra(Intent.EXTRA_STREAM, GeneratePDF.createPDF(new DBHelper(this),getSharedPreferences(ProfileActivity.keyPreferenceName, MODE_PRIVATE)));
         mailPDFIntent.setData(Uri.parse("mailto:"));
         mailPDFIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // this will make such that when user returns to your app, your app is displayed, instead of the email app.
         try {
