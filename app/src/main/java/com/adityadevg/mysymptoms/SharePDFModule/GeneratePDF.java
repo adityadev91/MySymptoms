@@ -28,6 +28,8 @@ import java.util.List;
 
 public class GeneratePDF {
 
+    public static final String appDirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MySymptoms";
+
     private static final String DATE = "Date";
     private static final String TIME = "Time";
     private static final String BODY_PART = "Body Part";
@@ -36,13 +38,12 @@ public class GeneratePDF {
 
     public static Uri createPDF(DBHelper dbHelper, SharedPreferences sharedPreferences) {
         Document doc = new Document(PageSize.A4);
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MySymptoms";
-        File directoryPath = new File(path);
+        File directoryPath = new File(appDirPath);
         String pdfFileName = sharedPreferences.getString(ProfileActivity.keyPatientName, "").split(" ")[0]
                 + "_"
                 + System.currentTimeMillis()
                 + ".pdf";
-        File file = new File(directoryPath, pdfFileName);
+        File newPdfFile = new File(directoryPath, pdfFileName);
 
         List<SymptomDetailsDTO> listOfSymptomDetails = dbHelper.getListOfAllSymptomDetails();
 
@@ -52,7 +53,7 @@ public class GeneratePDF {
             if (!directoryPath.exists())
                 directoryPath.mkdirs();
 
-            writer = PdfWriter.getInstance(doc, new FileOutputStream(file));
+            writer = PdfWriter.getInstance(doc, new FileOutputStream(newPdfFile));
             writer.setPageEvent(new MyFooter(sharedPreferences));
 
             doc.open();
@@ -96,7 +97,7 @@ public class GeneratePDF {
         } finally {
             doc.close();
         }
-        return Uri.fromFile(file);
+        return Uri.fromFile(newPdfFile);
     }
 
     private static PdfPTable getSymptomDetailsTable(List<SymptomDetailsDTO> listOfSymptomDetails) {

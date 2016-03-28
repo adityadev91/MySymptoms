@@ -27,11 +27,15 @@ import android.widget.Toast;
 
 import com.adityadevg.mysymptoms.PickerFragments.DatePickerFragment;
 import com.adityadevg.mysymptoms.R;
+import com.adityadevg.mysymptoms.SharePDFModule.GeneratePDF;
 import com.adityadevg.mysymptoms.SymptomsActivity;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by adityadev on 3/4/2016.
@@ -81,6 +85,8 @@ public class EntryDetailsActivity extends AppCompatActivity
 
     String str_date = "", str_time = "";
     private int symptomID;
+
+    final static String IMAGE_DIR_PATH = GeneratePDF.appDirPath + "/Symptom Images";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,15 +239,37 @@ public class EntryDetailsActivity extends AppCompatActivity
     /** To receive image from camera intent */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && ((requestCode == REQUEST_IMAGE_CAPTURE) || (requestCode == REQUEST_IMAGE_SELECT))) {
+
+        if (resultCode == Activity.RESULT_OK &&
+                ((requestCode == REQUEST_IMAGE_CAPTURE) || (requestCode == REQUEST_IMAGE_SELECT))) {
             try {
-                InputStream stream = getContentResolver().openInputStream(
-                        data.getData());
+                File imgDirPath = new File(IMAGE_DIR_PATH);
+                if (!imgDirPath.exists()) {
+                    imgDirPath.mkdirs();
+                }
+                str_imgID = getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".jpg";
+                File imgFilePath = new File(imgDirPath, str_imgID);
+                OutputStream fOut = new FileOutputStream(imgFilePath);
+
+                if (!imgFilePath.exists()) {
+                    imgFilePath.mkdirs();
+                }
+
+                InputStream stream = getContentResolver()
+                        .openInputStream(
+                                data.getData());
                 bitmap = BitmapFactory.decodeStream(stream);
-                //bitmap.compress(Bitmap.CompressFormat.JPEG, );
-                stream.close();
+
+                int targetSize = 1000;
+                int largerSide = bitmap.getWidth() < bitmap.getHeight() ? bitmap.getHeight() : bitmap.getWidth();
+                int ratio = largerSide < targetSize ? 100 : (targetSize / largerSide) * 100;
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, ratio, fOut);
                 iv_symptomImg.setImageBitmap(bitmap);
 
+                fOut.flush();
+                fOut.close();
+                stream.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -297,7 +325,7 @@ public class EntryDetailsActivity extends AppCompatActivity
     }
 
     private void updateEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
-        if(dbHelper.updateSymptom(symptomID, date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)){
+        if (dbHelper.updateSymptom(symptomID, date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)) {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));

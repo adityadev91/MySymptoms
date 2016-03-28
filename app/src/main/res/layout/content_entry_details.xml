@@ -72,9 +72,9 @@
             android:id="@+id/editText_symptomDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences|textMultiLine"
             android:gravity="top"
             android:hint="@string/provide_a_concise_description_of_your_ailment"
+            android:inputType="textCapSentences|textMultiLine"
             android:minLines="5" />
 
         <TextView
@@ -113,8 +113,8 @@
 
         <ImageView
             android:id="@+id/img_symptom"
-            android:layout_width="@dimen/activity_horizontal_margin"
-            android:layout_height="@dimen/activity_vertical_margin" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_imageName"

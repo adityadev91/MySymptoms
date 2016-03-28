@@ -17,9 +17,8 @@
 
     <!-- The following permissions are only requested if the device is on M or above.
      On older platforms these permissions are not requested and will not be available. -->
-    <uses-permission-sdk-m android:name="android.permission.CAMERA" />-->
-    <uses-permission-sdk-m android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
-    <uses-permission-sdk-m android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission-sdk-m android:name="android.permission.CAMERA" />
+    <uses-permission-sdk-m android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application

@@ -57,8 +57,6 @@
     <string name="no_email_client_installed">No email client installed</string>
 
 
-
-
     <string-array name="array_body_parts">
         <item>Left Eye</item>
         <item>Right Eye</item>
