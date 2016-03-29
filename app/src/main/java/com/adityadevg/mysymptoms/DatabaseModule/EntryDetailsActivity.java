@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -87,6 +88,9 @@ public class EntryDetailsActivity extends AppCompatActivity
     private int symptomID;
 
     final static String IMAGE_DIR_PATH = GeneratePDF.appDirPath + "/Symptom Images";
+    private Intent data;
+    private OutputStream fOut;
+    private int bitmapScaleRatio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +132,8 @@ public class EntryDetailsActivity extends AppCompatActivity
             sp_bodyPart.setSelection(getIndex(sp_bodyPart, bundle.getString(dbHelper.SYMPTOMS_COLUMN_BODY_PART).toString()));
             et_sympDesc.setText(bundle.getString(dbHelper.SYMPTOMS_COLUMN_SYMPTOM_DESC));
             sp_levelOfSeverity.setSelection(getIndex(sp_levelOfSeverity, bundle.getString(dbHelper.SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY).toString()));
+            str_imgID = (bundle.getString(dbHelper.SYMPTOMS_COLUMN_IMAGE_ID));
+            iv_symptomImg.setImageURI(Uri.parse(IMAGE_DIR_PATH + "/" + str_imgID));
             symptomID = dbHelper.getIdFromDateTime(str_date + " " + str_time);
 
             isUpdate = true;
@@ -240,20 +246,19 @@ public class EntryDetailsActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        this.data = data;
+
+        File imgDirPath = new File(IMAGE_DIR_PATH);
+        if (!imgDirPath.exists()) {
+            imgDirPath.mkdirs();
+        }
+        str_imgID = getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".jpg";
+        File imgFilePath = new File(imgDirPath, str_imgID);
+
         if (resultCode == Activity.RESULT_OK &&
                 ((requestCode == REQUEST_IMAGE_CAPTURE) || (requestCode == REQUEST_IMAGE_SELECT))) {
             try {
-                File imgDirPath = new File(IMAGE_DIR_PATH);
-                if (!imgDirPath.exists()) {
-                    imgDirPath.mkdirs();
-                }
-                str_imgID = getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".jpg";
-                File imgFilePath = new File(imgDirPath, str_imgID);
-                OutputStream fOut = new FileOutputStream(imgFilePath);
-
-                if (!imgFilePath.exists()) {
-                    imgFilePath.mkdirs();
-                }
+                fOut = new FileOutputStream(imgFilePath);
 
                 InputStream stream = getContentResolver()
                         .openInputStream(
@@ -262,13 +267,9 @@ public class EntryDetailsActivity extends AppCompatActivity
 
                 int targetSize = 1000;
                 int largerSide = bitmap.getWidth() < bitmap.getHeight() ? bitmap.getHeight() : bitmap.getWidth();
-                int ratio = largerSide < targetSize ? 100 : (targetSize / largerSide) * 100;
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG, ratio, fOut);
+                bitmapScaleRatio = largerSide < targetSize ? 100 : (targetSize / largerSide) * 100;
                 iv_symptomImg.setImageBitmap(bitmap);
 
-                fOut.flush();
-                fOut.close();
                 stream.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -297,6 +298,7 @@ public class EntryDetailsActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String date_time = tv_dateStamp.getText().toString() + " " + tv_timeStamp.getText().toString();
+                        writeBitmapToFile();
                         if (isUpdate) {
                             updateEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
                         } else {
@@ -312,6 +314,20 @@ public class EntryDetailsActivity extends AppCompatActivity
                 });
         saveEntryDialog.create();
         saveEntryDialog.show();
+    }
+
+    private void writeBitmapToFile() {
+        if (null != bitmap){
+            bitmap.compress(Bitmap.CompressFormat.JPEG, bitmapScaleRatio, fOut);
+        }
+        if (null != fOut){
+            try {
+                fOut.flush();
+                fOut.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void saveEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
