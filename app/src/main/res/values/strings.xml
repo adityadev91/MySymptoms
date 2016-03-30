@@ -55,6 +55,7 @@
     <string name="your_symptom_has_been_deleted">Your symptom has been deleted</string>
     <string name="your_symptom_could_not_be_deleted">Your symptom could not be deleted</string>
     <string name="no_email_client_installed">No email client installed</string>
+    <string name="welcome_to_my_symptoms">Welcome to My Symptoms</string>
 
 
     <string-array name="array_body_parts">
