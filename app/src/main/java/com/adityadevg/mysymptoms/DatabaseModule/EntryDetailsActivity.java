@@ -87,7 +87,6 @@ public class EntryDetailsActivity extends AppCompatActivity
     String str_date = "", str_time = "";
     private int symptomID;
 
-    final static String IMAGE_DIR_PATH = GeneratePDF.appDirPath + "/Symptom Images";
     private Intent data;
     private OutputStream fOut;
     private int bitmapScaleRatio;
@@ -133,7 +132,7 @@ public class EntryDetailsActivity extends AppCompatActivity
             et_sympDesc.setText(bundle.getString(dbHelper.SYMPTOMS_COLUMN_SYMPTOM_DESC));
             sp_levelOfSeverity.setSelection(getIndex(sp_levelOfSeverity, bundle.getString(dbHelper.SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY).toString()));
             str_imgID = (bundle.getString(dbHelper.SYMPTOMS_COLUMN_IMAGE_ID));
-            iv_symptomImg.setImageURI(Uri.parse(IMAGE_DIR_PATH + "/" + str_imgID));
+            iv_symptomImg.setImageURI(Uri.parse(GeneratePDF.IMAGE_DIR_PATH + File.separator + str_imgID));
             symptomID = dbHelper.getIdFromDateTime(str_date + " " + str_time);
 
             isUpdate = true;
@@ -248,7 +247,7 @@ public class EntryDetailsActivity extends AppCompatActivity
 
         this.data = data;
 
-        File imgDirPath = new File(IMAGE_DIR_PATH);
+        File imgDirPath = new File(GeneratePDF.IMAGE_DIR_PATH);
         if (!imgDirPath.exists()) {
             imgDirPath.mkdirs();
         }

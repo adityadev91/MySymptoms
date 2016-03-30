@@ -7,10 +7,12 @@ import android.os.Environment;
 import com.adityadevg.mysymptoms.DatabaseModule.DBHelper;
 import com.adityadevg.mysymptoms.DatabaseModule.SymptomDetailsDTO;
 import com.adityadevg.mysymptoms.ProfileActivity;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -28,7 +30,8 @@ import java.util.List;
 
 public class GeneratePDF {
 
-    public static final String appDirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MySymptoms";
+    public static final String APP_DIR_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MySymptoms";
+    public static final String IMAGE_DIR_PATH = GeneratePDF.APP_DIR_PATH + File.separator + "Symptom Images";
 
     private static final String DATE = "Date";
     private static final String TIME = "Time";
@@ -38,7 +41,7 @@ public class GeneratePDF {
 
     public static Uri createPDF(DBHelper dbHelper, SharedPreferences sharedPreferences) {
         Document doc = new Document(PageSize.A4);
-        File directoryPath = new File(appDirPath);
+        File directoryPath = new File(APP_DIR_PATH);
         String pdfFileName = sharedPreferences.getString(ProfileActivity.keyPatientName, "").split(" ")[0]
                 + "_"
                 + System.currentTimeMillis()
@@ -59,6 +62,8 @@ public class GeneratePDF {
             doc.open();
             doc.add(new Paragraph(" "));
             doc.add(getSymptomDetailsTable(listOfSymptomDetails));
+            doc.newPage();
+            getSymptomsImages(listOfSymptomDetails, writer, doc);
 
 /*
             Paragraph p1 = new Paragraph("Hi! I am generating my first PDF");
@@ -100,6 +105,35 @@ public class GeneratePDF {
         return Uri.fromFile(newPdfFile);
     }
 
+    private static void getSymptomsImages(List<SymptomDetailsDTO> listOfSymptomDetails, PdfWriter writer, Document doc) {
+        Image img;
+        for (SymptomDetailsDTO symptomDetailsObj : listOfSymptomDetails) {
+            try {
+
+                img = Image.getInstance(IMAGE_DIR_PATH + File.separator + symptomDetailsObj.getPictureID());
+                img.scaleToFit(PageSize.A4.getWidth() * 3 / 4, PageSize.A4.getHeight() * 3 / 4);
+                doc.newPage();
+                doc.add(new Paragraph(" "));
+                String tempDateTime = symptomDetailsObj.getdateTimeStamp();
+                if (tempDateTime.trim().length() > 0) {
+                    doc.add(new Paragraph("Date: " + tempDateTime.split(" ")[0]));
+                    doc.add(new Paragraph("Time: " + tempDateTime.split(" ")[1].substring(0, tempDateTime.split(" ")[1].length() - 3)));
+                }
+                doc.add(new Paragraph("Body Part: " + symptomDetailsObj.getBodyPart()));
+                doc.add(new Paragraph("Severity Level: " + symptomDetailsObj.getLevelOfSecurity()));
+                img.setAbsolutePosition(0, doc.bottom() + Font.DEFAULTSIZE * 2);
+                doc.add(img);
+
+            } catch (BadElementException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private static PdfPTable getSymptomDetailsTable(List<SymptomDetailsDTO> listOfSymptomDetails) {
         PdfPTable pdfTable = new PdfPTable(5);
         Font colHeadFont = new Font(Font.FontFamily.UNDEFINED, Font.DEFAULTSIZE, Font.BOLD);
@@ -111,12 +145,15 @@ public class GeneratePDF {
         pdfTable.addCell(new PdfPCell(new Phrase(LEVEL_OF_SEVERITY, colHeadFont)));
 
         for (SymptomDetailsDTO symptomDetailsObj : listOfSymptomDetails) {
-            // Display date value from datetimestamp string
-            pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[0]);
 
-            // Display time value from datetimestamp string
-            // And eliminate seconds value from time stamp
-            pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[1].substring(0, symptomDetailsObj.getdateTimeStamp().split(" ")[1].length() - 3));
+            if (symptomDetailsObj.getdateTimeStamp().trim().length() > 0) {
+                // Display date value from datetimestamp string
+                pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[0]);
+                // Display time value from datetimestamp string
+                // And eliminate seconds value from time stamp
+                pdfTable.addCell(symptomDetailsObj.getdateTimeStamp().split(" ")[1].substring(0, symptomDetailsObj.getdateTimeStamp().split(" ")[1].length() - 3));
+            }
+
 
             pdfTable.addCell(symptomDetailsObj.getBodyPart());
             pdfTable.addCell(symptomDetailsObj.getSymptomDesc());
@@ -162,8 +199,8 @@ public class GeneratePDF {
             Phrase headerPatientEmail = new Phrase(str_patientEmail, headerFont);
             Phrase headerPatientPhone = new Phrase(phoneTAG + str_patientPhone, headerFont);
 
-            Phrase headerEmergencyName = new Phrase(emergencyContactTAG+ str_emergencyName, footerFont);
-            Phrase headerEmergencyPhone = new Phrase(phoneTAG+ str_emergencyPhone, footerFont);
+            Phrase headerEmergencyName = new Phrase(emergencyContactTAG + str_emergencyName, footerFont);
+            Phrase headerEmergencyPhone = new Phrase(phoneTAG + str_emergencyPhone, footerFont);
 
             Phrase footerInsuranceName = new Phrase(insuranceCompanyTAG + str_insuranceName, footerFont);
             Phrase footerMemberID = new Phrase(memberIdTAG + str_memberID, footerFont);
