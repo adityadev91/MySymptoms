@@ -106,6 +106,6 @@ public class MainActivity extends AppCompatActivity {
      * Called when the user clicks the btn_viewSymptoms
      */
     public void openSymptoms(View symptomsView) {
-        startActivity(new Intent(this, SymptomsActivity.class));
+        startActivity(new Intent(this, ListOfSymptomsActivity.class));
     }
 }

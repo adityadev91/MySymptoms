@@ -1,7 +1,6 @@
 package com.adityadevg.mysymptoms;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,21 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.adityadevg.mysymptoms.DatabaseModule.DBHelper;
 import com.adityadevg.mysymptoms.DatabaseModule.EntryDetailsActivity;
+import com.adityadevg.mysymptoms.DatabaseModule.ListItemSymptomDetailsDTO;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by adityadev
  */
-public class SymptomsActivity extends AppCompatActivity {
+public class ListOfSymptomsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     FloatingActionButton fab_newEntry;
@@ -32,7 +29,9 @@ public class SymptomsActivity extends AppCompatActivity {
     private DBHelper dbHelper;
 
     private ListView listView_symptomsList;
-    private List<String> listOfSymptoms;
+    private List<String> listOfAllDateTimes;
+    private List<String> listOfAllSeverityLevels;
+    private List<String> listOfAllBodyParts;
     SymptomsArrayAdapter symptomsArrayAdapter;
 
     @Override
@@ -47,7 +46,10 @@ public class SymptomsActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         fab_newEntry = (FloatingActionButton) findViewById(R.id.newEntryBtn);
 
-        listOfSymptoms = dbHelper.getListOfAllDateTimes();
+        listOfAllDateTimes = dbHelper.getListOfColumnValues(DBHelper.SYMPTOMS_COLUMN_DATE_TIME);
+        listOfAllSeverityLevels = dbHelper.getListOfColumnValues(DBHelper.SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY);
+        listOfAllBodyParts = dbHelper.getListOfColumnValues(DBHelper.SYMPTOMS_COLUMN_BODY_PART);
+
         listView_symptomsList = (ListView) findViewById(R.id.lv_symptomsList);
         populateSymptoms();
 
@@ -58,7 +60,7 @@ public class SymptomsActivity extends AppCompatActivity {
     }
 
     public void populateSymptoms() {
-        symptomsArrayAdapter = new SymptomsArrayAdapter(this, android.R.layout.simple_list_item_1, listOfSymptoms);
+        symptomsArrayAdapter = new SymptomsArrayAdapter(this, ListItemSymptomDetailsDTO.getListOfSymptomDetailsDTO(listOfAllDateTimes, listOfAllBodyParts, listOfAllSeverityLevels));
         listView_symptomsList.setAdapter(symptomsArrayAdapter);
         listView_symptomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -97,7 +99,8 @@ public class SymptomsActivity extends AppCompatActivity {
     }
 
     private void updateEntry(final AdapterView<?> parent, final int position) {
-        final String date_time = (String) parent.getItemAtPosition(position);
+        ListItemSymptomDetailsDTO listItemObj = (ListItemSymptomDetailsDTO) parent.getItemAtPosition(position);
+        final String date_time = listItemObj.getDateTimeStamp();
         startActivity((new Intent(getApplicationContext(), EntryDetailsActivity.class))
                 .putExtras(dbHelper.getSymptomFromDateTime(date_time)));
     }
@@ -112,7 +115,7 @@ public class SymptomsActivity extends AppCompatActivity {
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            listOfSymptoms.remove(date_time);
+                            listOfAllDateTimes.remove(date_time);
                             symptomsArrayAdapter.notifyDataSetChanged();
                             listView_symptomsList.setAlpha(1);
                         }
@@ -121,31 +124,5 @@ public class SymptomsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_could_not_be_deleted), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private class SymptomsArrayAdapter extends ArrayAdapter<String> {
-
-        private final Map<String, Integer> mapOfSymptomEntries;
-
-        public SymptomsArrayAdapter(Context context, int resource, List<String> listOfSymptomEntries) {
-            super(context, resource, listOfSymptomEntries);
-
-            mapOfSymptomEntries = new HashMap<>();
-
-            for (int i = 0; i < listOfSymptomEntries.size(); ++i) {
-                mapOfSymptomEntries.put(listOfSymptomEntries.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return mapOfSymptomEntries.get(getItem(position));
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
     }
 }

@@ -165,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{date_time});
     }
 
-    public List<String> getListOfAllDateTimes() {
+    public List<String> getListOfColumnValues(String colName) {
         db = this.getWritableDatabase();
         List<String> array_list = new ArrayList<>();
 
@@ -173,7 +173,7 @@ public class DBHelper extends SQLiteOpenHelper {
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
-            array_list.add(res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_DATE_TIME)));
+            array_list.add(res.getString(res.getColumnIndex(colName)));
             res.moveToNext();
         }
         return array_list;

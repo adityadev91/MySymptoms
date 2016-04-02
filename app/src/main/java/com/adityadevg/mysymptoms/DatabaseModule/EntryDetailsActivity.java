@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.adityadevg.mysymptoms.PickerFragments.DatePickerFragment;
 import com.adityadevg.mysymptoms.R;
 import com.adityadevg.mysymptoms.SharePDFModule.GeneratePDF;
-import com.adityadevg.mysymptoms.SymptomsActivity;
+import com.adityadevg.mysymptoms.ListOfSymptomsActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -332,7 +332,7 @@ public class EntryDetailsActivity extends AppCompatActivity
     private void saveEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
         if (dbHelper.insertSymptom(date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)) {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
+            startActivity(new Intent(getApplicationContext(), ListOfSymptomsActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_cannot_be_logged_due_to_an_internal_database_error), Toast.LENGTH_SHORT).show();
@@ -342,7 +342,7 @@ public class EntryDetailsActivity extends AppCompatActivity
     private void updateEntry(String date_time, String bodyPart, String sympDesc, String levelOfSeverity, String str_imgID) {
         if (dbHelper.updateSymptom(symptomID, date_time, bodyPart, sympDesc, levelOfSeverity, str_imgID)) {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_has_been_logged), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
+            startActivity(new Intent(getApplicationContext(), ListOfSymptomsActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.your_symptom_cannot_be_logged_due_to_an_internal_database_error), Toast.LENGTH_SHORT).show();
@@ -366,7 +366,7 @@ public class EntryDetailsActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        startActivity(new Intent(getApplicationContext(), SymptomsActivity.class)
+                        startActivity(new Intent(getApplicationContext(), ListOfSymptomsActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })

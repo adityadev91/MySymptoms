@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SymptomsActivity"
+            android:name=".ListOfSymptomsActivity"
             android:label="@string/list_of_symptoms"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
