@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.adityadevg.mysymptoms"
-    android:versionCode="1"
+    android:versionCode="2"
     android:versionName="1.0">
 
     <uses-sdk
@@ -12,12 +12,16 @@
     <!-- Note that all required permissions are declared here in the Android manifest.
     On Android M and above, use of these permissions is only requested at run time. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <!-- The following permissions are only requested if the device is on M or above.
+    <!-- The following permissions are only requested if the device is on sdk 23 or above.
      On older platforms these permissions are not requested and will not be available. -->
-    <uses-permission-sdk-m android:name="android.permission.CAMERA" />
-    <uses-permission-sdk-m android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application

@@ -41,7 +41,7 @@ public class ListItemSymptomDetailsDTO {
         this.str_dateTimeStamp = str_dateTimeStamp;
     }
 
-    public String getLevelOfSecurity() {
+    public String getLevelOfSeverity() {
         return str_levelOfSecurity;
     }
 
@@ -49,11 +49,10 @@ public class ListItemSymptomDetailsDTO {
         this.str_levelOfSecurity = str_levelOfSecurity;
     }
 
-    public static List<ListItemSymptomDetailsDTO> getListOfSymptomDetailsDTO(List<String> listOfAllDateTimes, List<String> listOfAllBodyParts, List<String> listOfAllSeverityLevels) {
+    public static List<ListItemSymptomDetailsDTO> getListOfSymptomDetailsDTO(DBHelper dbHelper, List<String> listOfAllDateTimes, List<String> listOfAllBodyParts, List<String> listOfAllSeverityLevels) {
         List<ListItemSymptomDetailsDTO> array_list = new ArrayList<>();
-        for(int i =0;i<listOfAllBodyParts.size();i++){
+        for (int i = 0; i < dbHelper.getNumberOfSymptoms(); i++) {
             array_list.add(getInstanceOfSymptomDetailsDTO(listOfAllDateTimes.get(i), listOfAllBodyParts.get(i), listOfAllSeverityLevels.get(i)));
-            i++;
         }
         return array_list;
     }

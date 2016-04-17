@@ -60,7 +60,7 @@ public class ListOfSymptomsActivity extends AppCompatActivity {
     }
 
     public void populateSymptoms() {
-        symptomsArrayAdapter = new SymptomsArrayAdapter(this, ListItemSymptomDetailsDTO.getListOfSymptomDetailsDTO(listOfAllDateTimes, listOfAllBodyParts, listOfAllSeverityLevels));
+        symptomsArrayAdapter = new SymptomsArrayAdapter(this, ListItemSymptomDetailsDTO.getListOfSymptomDetailsDTO(dbHelper, listOfAllDateTimes, listOfAllBodyParts, listOfAllSeverityLevels));
         listView_symptomsList.setAdapter(symptomsArrayAdapter);
         listView_symptomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,13 +109,16 @@ public class ListOfSymptomsActivity extends AppCompatActivity {
     *  Deletes selected entry from UI and db
     */
     private void deleteEntry(final AdapterView<?> parent, final View view, final int position) {
-        final String date_time = (String) parent.getItemAtPosition(position);
-        if (dbHelper.deleteSymptom(date_time) == 1){
+        final ListItemSymptomDetailsDTO listItemObj = (ListItemSymptomDetailsDTO) parent.getItemAtPosition(position);
+        if (dbHelper.deleteSymptom(listItemObj.getDateTimeStamp()) == 1){
             view.animate().setDuration(2000).alpha(0)
                     .withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            listOfAllDateTimes.remove(date_time);
+                            symptomsArrayAdapter.remove(listItemObj);
+                            listOfAllDateTimes.remove(listItemObj.getDateTimeStamp());
+                            listOfAllBodyParts.remove(listItemObj.getBodyPart());
+                            listOfAllSeverityLevels.remove(listItemObj.getLevelOfSeverity());
                             symptomsArrayAdapter.notifyDataSetChanged();
                             listView_symptomsList.setAlpha(1);
                         }

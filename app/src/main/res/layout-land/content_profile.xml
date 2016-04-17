@@ -22,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,6 +41,7 @@
                     android:id="@+id/editText_patientName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="textCapWords" />
 
                 <TextView
@@ -52,6 +54,7 @@
                     android:id="@+id/editText_patientEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="textEmailAddress" />
 
                 <TextView
@@ -64,6 +67,7 @@
                     android:id="@+id/editText_patientPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="phone" />
             </LinearLayout>
 
@@ -83,6 +87,7 @@
                     android:id="@+id/editText_insuranceName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="textCapWords" />
 
                 <TextView
@@ -95,6 +100,7 @@
                     android:id="@+id/editText_memberID"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="textCapCharacters" />
             </LinearLayout>
         </LinearLayout>
@@ -102,7 +108,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -122,12 +129,13 @@
                     android:id="@+id/textView_emergencyName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/name" />
+                    android:text="@string/full_name" />
 
                 <EditText
                     android:id="@+id/editText_emergencyName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="textCapWords" />
             </LinearLayout>
 
@@ -148,6 +156,7 @@
                     android:id="@+id/editText_emergencyPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_layout"
                     android:inputType="phone" />
             </LinearLayout>
         </LinearLayout>
@@ -156,6 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="horizontal">
 
             <Button

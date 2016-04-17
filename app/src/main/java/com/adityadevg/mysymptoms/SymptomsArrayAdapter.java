@@ -66,7 +66,7 @@ public class SymptomsArrayAdapter extends ArrayAdapter<ListItemSymptomDetailsDTO
         viewHolder.tv_bodyPart.setText(symptomDetails.getBodyPart());
 
         TextView tv_severityLevel = (TextView) convertView.findViewById(R.id.list_item_severity_level);
-        viewHolder.tv_severityLevel.setText(symptomDetails.getLevelOfSecurity());
+        viewHolder.tv_severityLevel.setText(symptomDetails.getLevelOfSeverity());
 
         return convertView;
     }

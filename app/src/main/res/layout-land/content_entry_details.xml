@@ -25,7 +25,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView_patientEmail"
+                android:id="@+id/textView_timeOfOccurrence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_of_occurrence" />
@@ -36,31 +36,71 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:background="@android:drawable/ic_menu_my_calendar"
                 android:onClick="setTimeOfOccurrence" />
+
+            <TextView
+                android:id="@+id/tv_dateOfOccurrence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"/>
+
+            <TextView
+                android:id="@+id/tv_timeOfOccurrence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"/>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_dateOfOccurrence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_timeOfOccurrence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/textView_bodyPart"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/body_part" />
+            android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spinner_bodyPart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/array_body_parts"
-            android:prompt="@string/choose_a_body_part"
-            android:spinnerMode="dialog" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_bodyPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/body_part" />
+
+                <Spinner
+                    android:id="@+id/spinner_bodyPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/array_body_parts"
+                    android:gravity="left"
+                    android:prompt="@string/choose_a_body_part"
+                    android:spinnerMode="dialog" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_severityLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/level_of_severity" />
+
+                <Spinner
+                    android:id="@+id/spinner_severityLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/array_levels_of_severity"
+                    android:gravity="right"
+                    android:prompt="@string/choose_a_level_of_severity"
+                    android:spinnerMode="dialog" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView_symptomDesc"
@@ -72,25 +112,11 @@
             android:id="@+id/editText_symptomDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/edittext_layout"
             android:gravity="top"
             android:hint="@string/provide_a_concise_description_of_your_ailment"
             android:inputType="textCapSentences|textMultiLine"
-            android:background="@drawable/edittext_layout"
             android:minLines="5" />
-
-        <TextView
-            android:id="@+id/textView_severityLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/level_of_severity" />
-
-        <Spinner
-            android:id="@+id/spinner_severityLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/array_levels_of_severity"
-            android:prompt="@string/choose_a_level_of_severity"
-            android:spinnerMode="dialog" />
 
         <LinearLayout
             android:layout_width="match_parent"

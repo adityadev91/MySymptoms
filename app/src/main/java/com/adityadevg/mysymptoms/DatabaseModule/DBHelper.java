@@ -19,6 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String SYMPTOMS_DATABASE_NAME = "MySymptomsDB.db";
     public static final String SYMPTOMS_TABLE_NAME = "SymptomEntries";
+    private static int DATABASE_VERSION = 1;
 
     public static final String SYMPTOMS_COLUMN_ID = "id";
     public static final String SYMPTOMS_COLUMN_DATE_TIME = "date_time";
@@ -35,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private String statement;
 
     public DBHelper(Context context) {
-        super(context, SYMPTOMS_DATABASE_NAME, null, 1);
+        super(context, SYMPTOMS_DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -202,11 +203,23 @@ public class DBHelper extends SQLiteOpenHelper {
             str_levelOfSecurity = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_LEVEL_OF_SEVERITY));
             str_pictureID = res.getString(res.getColumnIndex(SYMPTOMS_COLUMN_IMAGE_ID));
 
-            symptomDetailsObj = SymptomDetailsDTO.getInstanceOfSymptomDetailsDTO(str_dateTimeStamp,str_bodyPart,str_symptomDesc,str_levelOfSecurity,str_pictureID);
+            symptomDetailsObj = SymptomDetailsDTO.getInstanceOfSymptomDetailsDTO(str_dateTimeStamp, str_bodyPart, str_symptomDesc, str_levelOfSecurity, str_pictureID);
             array_list.add(symptomDetailsObj);
 
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public boolean isExists(int symptomID) {
+        Cursor res = null;
+        String statement = "SELECT * FROM " + SYMPTOMS_TABLE_NAME + " WHERE " + SYMPTOMS_COLUMN_ID + "= ?";
+        res = db.rawQuery(statement, new String[]{String.valueOf(symptomID)});
+
+        if (res.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

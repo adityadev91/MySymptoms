@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,16 +27,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adityadevg.mysymptoms.ListOfSymptomsActivity;
 import com.adityadevg.mysymptoms.PickerFragments.DatePickerFragment;
 import com.adityadevg.mysymptoms.R;
 import com.adityadevg.mysymptoms.SharePDFModule.GeneratePDF;
-import com.adityadevg.mysymptoms.ListOfSymptomsActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -46,6 +46,8 @@ public class EntryDetailsActivity extends AppCompatActivity
         implements OnItemSelectedListener {
     private Toolbar toolbar;
     private DBHelper dbHelper;
+    private File imgDirPath;
+    private File imgFilePath;
 
     /**
      * Random, unique value for receive image from intent
@@ -87,9 +89,7 @@ public class EntryDetailsActivity extends AppCompatActivity
     String str_date = "", str_time = "";
     private int symptomID;
 
-    private Intent data;
     private OutputStream fOut;
-    private int bitmapScaleRatio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +118,11 @@ public class EntryDetailsActivity extends AppCompatActivity
         sp_levelOfSeverity = (Spinner) findViewById(R.id.spinner_severityLevel);
         sp_levelOfSeverity.setOnItemSelectedListener(this);
         sp_levelOfSeverity.setPrompt(getString(R.string.choose_a_level_of_severity));
+
+        imgDirPath = new File(GeneratePDF.IMAGE_DIR_PATH);
+        if (!imgDirPath.exists()) {
+            imgDirPath.mkdirs();
+        }
 
         btn_save = (Button) findViewById(R.id.saveBtn);
         btn_back = (Button) findViewById(R.id.backBtn);
@@ -217,15 +222,18 @@ public class EntryDetailsActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent captureImageIntent;
+                str_imgID = getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".jpg";
+                imgFilePath = new File(imgDirPath, str_imgID);
                 switch (which) {
                     case 0:
                         captureImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        //captureImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imgFilePath));
                         startActivityForResult(captureImageIntent, REQUEST_IMAGE_CAPTURE);
                         break;
                     case 1:
                         captureImageIntent = new Intent(
-                                Intent.ACTION_GET_CONTENT,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         captureImageIntent.setType("image/*");
                         startActivityForResult(
                                 Intent.createChooser(captureImageIntent, getString(R.string.select_from_existing_images)),
@@ -245,38 +253,61 @@ public class EntryDetailsActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        this.data = data;
-
-        File imgDirPath = new File(GeneratePDF.IMAGE_DIR_PATH);
-        if (!imgDirPath.exists()) {
-            imgDirPath.mkdirs();
-        }
-        str_imgID = getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".jpg";
-        File imgFilePath = new File(imgDirPath, str_imgID);
-
-        if (resultCode == Activity.RESULT_OK &&
-                ((requestCode == REQUEST_IMAGE_CAPTURE) || (requestCode == REQUEST_IMAGE_SELECT))) {
+        if (resultCode == Activity.RESULT_OK) {
             try {
-                fOut = new FileOutputStream(imgFilePath);
-
-                InputStream stream = getContentResolver()
-                        .openInputStream(
-                                data.getData());
-                bitmap = BitmapFactory.decodeStream(stream);
-
-                int targetSize = 1000;
-                int largerSide = bitmap.getWidth() < bitmap.getHeight() ? bitmap.getHeight() : bitmap.getWidth();
-                bitmapScaleRatio = largerSide < targetSize ? 100 : (targetSize / largerSide) * 100;
-                iv_symptomImg.setImageBitmap(bitmap);
-
-                stream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                switch (requestCode) {
+                    case REQUEST_IMAGE_CAPTURE:
+                        imageFromCamera(data);
+                        break;
+                    case REQUEST_IMAGE_SELECT:
+                        imageFromGallery(data);
+                        break;
+                    default:
+                        Toast.makeText(this, getString(R.string.you_may_only_click_a_new_image_or_select_an_existing_image), Toast.LENGTH_LONG).show();
+                        break;
+                }
+            } catch (Exception ioe) {
+                ioe.printStackTrace();
             }
         }
     }
+
+    /**
+     * Image result from camera
+     * @param data
+     */
+    private void imageFromCamera(Intent data) {
+        bitmap = (Bitmap) data.getExtras().get("data");
+        updateImageView(bitmap);
+    }
+
+    /**
+     * Image result from gallery
+     * @param data
+     */
+    private void imageFromGallery(Intent data) {
+        Uri selectedImage = data.getData();
+        String [] filePathColumn = {MediaStore.Images.Media.DATA};
+
+        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        bitmap = BitmapFactory.decodeFile(filePath);
+        updateImageView(bitmap);
+    }
+
+    /**
+     * Update the imageView with new bitmap
+     * @param newImage
+     */
+    private void updateImageView(Bitmap newImage) {
+        iv_symptomImg.setImageBitmap(newImage);
+    }
+
 
     /**
      * Calls DatePickerFragment which in turn calls TimePickerFragment
@@ -291,35 +322,56 @@ public class EntryDetailsActivity extends AppCompatActivity
      */
     public void modifyEntry(View entryView) {
         final AlertDialog.Builder saveEntryDialog = new AlertDialog.Builder(this);
+        String date_time = tv_dateStamp.getText().toString() + " " + tv_timeStamp.getText().toString();
+
+        if (null == str_imgID || str_imgID.trim().length() <= 0)
+            str_imgID = " ";
         saveEntryDialog.setMessage(R.string.your_changes_can_be_modified_or_deleted_later)
                 .setTitle(R.string.are_you_sure)
                 .setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String date_time = tv_dateStamp.getText().toString() + " " + tv_timeStamp.getText().toString();
-                        writeBitmapToFile();
-                        if (isUpdate) {
-                            updateEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
-                        } else {
-                            saveEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String date_time = tv_dateStamp.getText().toString() + " " + tv_timeStamp.getText().toString();
+                                writeBitmapToFile();
+                                if (isUpdate) {
+                                    updateEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
+                                } else {
+                                    saveEntry(date_time, bodyPart, et_sympDesc.getText().toString().trim().length() == 0 ? " " : et_sympDesc.getText().toString(), levelOfSeverity, str_imgID);
+                                }
+                            }
                         }
-                    }
-                })
+                )
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        saveEntryDialog.create();
-        saveEntryDialog.show();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }
+
+                );
+
+        if (!dbHelper.isExists(symptomID)|| isUpdate) {
+            if (null == date_time || date_time.trim().length() <= 10) {
+                Toast.makeText(getBaseContext(), getString(R.string.you_must_select_a_valid_time_of_occurrence), Toast.LENGTH_LONG).show();
+            } else {
+                saveEntryDialog.create();
+                saveEntryDialog.show();
+            }
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.a_symptom_already_exists_with_the_same_time), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void writeBitmapToFile() {
-        if (null != bitmap){
-            bitmap.compress(Bitmap.CompressFormat.JPEG, bitmapScaleRatio, fOut);
+        if (null != bitmap) {
+            try {
+                fOut = new FileOutputStream(imgFilePath);
+            } catch (FileNotFoundException fne) {
+                fne.printStackTrace();
+            }
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
         }
-        if (null != fOut){
+        if (null != fOut) {
             try {
                 fOut.flush();
                 fOut.close();
